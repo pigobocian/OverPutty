@@ -10,16 +10,35 @@ namespace OverPutty
 {
     class Log
     {
-        StringWriter logFile = null;
+        List<string> logLines = null;
+        string exePath;
 
         public Log()
         {
-            string exePath = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
-            if(!exePath.EndsWith(@"\"))
+            exePath = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
+            if (!exePath.EndsWith(@"\"))
             {
                 exePath += @"\";
             }
-            logFile = new StringWriter(exePath+"log.log");
+            logLines = File.ReadAllLines(exePath + "log.log").ToList();
         }
+
+        public void LogAdd(string txt)
+        {
+            string now = DateTime.Now.ToString(@"yyyy-MM-dd hh:mm:ss");
+            logLines.Add(now + " " + txt);
+            while(logLines.Count > 10000)
+            {
+                logLines.RemoveAt(0);
+            }
+
+            TextWriter logFile = new StreamWriter(exePath + "log.log");
+            foreach(string buf in logLines)
+            {
+                logFile.WriteLine(buf);
+            }
+            logFile.Close();
+        }
+
     }
 }
