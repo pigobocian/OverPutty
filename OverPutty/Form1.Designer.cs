@@ -29,10 +29,10 @@ namespace OverPutty
         /// </summary>
         private void InitializeComponent()
         {
-            this.listView1 = new System.Windows.Forms.ListView();
+            this.listViewHosts = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.listBox1 = new System.Windows.Forms.ListBox();
+            this.listBoxGrupy = new System.Windows.Forms.ListBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
@@ -45,19 +45,19 @@ namespace OverPutty
             this.button8 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // listView1
+            // listViewHosts
             // 
-            this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.listViewHosts.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2});
-            this.listView1.GridLines = true;
-            this.listView1.HideSelection = false;
-            this.listView1.Location = new System.Drawing.Point(12, 153);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(353, 285);
-            this.listView1.TabIndex = 0;
-            this.listView1.UseCompatibleStateImageBehavior = false;
-            this.listView1.View = System.Windows.Forms.View.Details;
+            this.listViewHosts.GridLines = true;
+            this.listViewHosts.HideSelection = false;
+            this.listViewHosts.Location = new System.Drawing.Point(12, 153);
+            this.listViewHosts.Name = "listViewHosts";
+            this.listViewHosts.Size = new System.Drawing.Size(353, 285);
+            this.listViewHosts.TabIndex = 0;
+            this.listViewHosts.UseCompatibleStateImageBehavior = false;
+            this.listViewHosts.View = System.Windows.Forms.View.Details;
             // 
             // columnHeader1
             // 
@@ -69,13 +69,13 @@ namespace OverPutty
             this.columnHeader2.Text = "Host";
             this.columnHeader2.Width = 120;
             // 
-            // listBox1
+            // listBoxGrupy
             // 
-            this.listBox1.FormattingEnabled = true;
-            this.listBox1.Location = new System.Drawing.Point(12, 27);
-            this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(353, 95);
-            this.listBox1.TabIndex = 1;
+            this.listBoxGrupy.FormattingEnabled = true;
+            this.listBoxGrupy.Location = new System.Drawing.Point(12, 27);
+            this.listBoxGrupy.Name = "listBoxGrupy";
+            this.listBoxGrupy.Size = new System.Drawing.Size(353, 95);
+            this.listBoxGrupy.TabIndex = 1;
             // 
             // label1
             // 
@@ -103,6 +103,7 @@ namespace OverPutty
             this.button1.TabIndex = 4;
             this.button1.Text = "Dodaj";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // button2
             // 
@@ -166,6 +167,7 @@ namespace OverPutty
             this.button8.TabIndex = 11;
             this.button8.Text = "Konfiguracja";
             this.button8.UseVisualStyleBackColor = true;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
             // 
             // FormMain
             // 
@@ -182,8 +184,8 @@ namespace OverPutty
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.listBox1);
-            this.Controls.Add(this.listView1);
+            this.Controls.Add(this.listBoxGrupy);
+            this.Controls.Add(this.listViewHosts);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "FormMain";
             this.Text = "OverPutty";
@@ -194,10 +196,10 @@ namespace OverPutty
 
         #endregion
 
-        private System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.ListView listViewHosts;
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ColumnHeader columnHeader2;
-        private System.Windows.Forms.ListBox listBox1;
+        private System.Windows.Forms.ListBox listBoxGrupy;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button button1;
