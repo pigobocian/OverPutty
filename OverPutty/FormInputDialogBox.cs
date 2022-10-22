@@ -20,6 +20,12 @@ namespace OverPutty
             textBox1.Text = "";
         }
 
+        public InputDialoBox(string text)
+        {
+            InitializeComponent();
+            textBox1.Text = text;
+        }
+
         private void InputDialogBox_Load(object sender, EventArgs e)
         {
 

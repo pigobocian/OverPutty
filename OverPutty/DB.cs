@@ -5,6 +5,7 @@ using System.Data.SqlTypes;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms.VisualStyles;
 
 namespace OverPutty
 {
@@ -71,9 +72,9 @@ namespace OverPutty
             }
         }
 
-        public int AddGrupa(string nazwaGrupy)
+        public void AddGrupa(string nazwaGrupy)
         {
-            int result = 0;
+            //int result = 0;
             try
             {
                 SQLiteCommand sqlCmd = connection.CreateCommand();
@@ -83,21 +84,53 @@ namespace OverPutty
                 sqlCmd.Parameters.Add(new SQLiteParameter("@nazwa", nazwaGrupy));
                 sqlCmd.Prepare();
                 sqlCmd.ExecuteNonQuery();
-
-                connection.Open();
-                SQLiteCommand cmdSelect = new SQLiteCommand("select max(id_grupy) from grupy", connection);
-                SQLiteDataReader reader = sqlCmd.ExecuteReader();
-
-                if (reader.Read())
-                {
-                    result = reader.GetInt32(0);
-                }
-
-            } catch (Exception e)
+                
+            } catch (SQLiteException e)
             {
                 Our.log.LogAdd("Błąd dodawania nowej grupy: " + e.Message);
             }
-            return result;
+        }
+
+        public void UpadteGrupy(int id_grupy, string nazwaGrupy)
+        {
+            try
+            {
+                SQLiteCommand cmd = connection.CreateCommand();
+
+                cmd.CommandText = "update grupy set nazwa = @nazwa where id_grupy = @id_grupy";
+                cmd.Parameters.Add(new SQLiteParameter("@nazwa", nazwaGrupy));
+                cmd.Parameters.Add(new SQLiteParameter("@id_grupy", id_grupy));
+                cmd.Prepare();
+                cmd.ExecuteNonQuery();
+            } catch (SQLiteException e)
+            {
+                Our.log.LogAdd("Błąd aktualizacji grupy, id_grupy=" + id_grupy + " nazwa=" + nazwaGrupy + " : " + e.Message);
+            }
+        }
+
+        public void DeleteGrupy(int id_grupy)
+        {
+            try
+            {
+                SQLiteCommand cmd = connection.CreateCommand();
+
+            }
+        }
+
+        public Dictionary<int, string> getListaGrup()
+        {
+            Dictionary<int, string> listaGrup = new Dictionary<int, string>();
+
+            SQLiteCommand cmd = new SQLiteCommand("select nazwa, id_grupy from grupy order by upper(nazwa)", connection);
+            SQLiteDataReader reader = cmd.ExecuteReader();
+            while(reader.Read())
+            {
+                string grupa = reader.GetString(0);
+                int id_grupa = reader.GetInt32(1);
+                listaGrup.Add(id_grupa, grupa);
+            }
+
+            return listaGrup;
         }
     }
 }

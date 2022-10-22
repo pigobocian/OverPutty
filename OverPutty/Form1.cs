@@ -17,29 +17,55 @@ namespace OverPutty
         {
             InitializeComponent();
             Our.log.LogAdd("Start aplikacji");
+            refreshGrupyListBox();
         }
 
         private void button8_Click(object sender, EventArgs e)
         {
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void dodajClick(object sender, EventArgs e)
         {
             InputDialoBox dialog = new InputDialoBox();
             dialog.ShowDialog();
             if(dialog.getResult() == ModalResult.mrOK)
             {
                 string txt = dialog.getText();
-                int id = Our.db.AddGrupa(txt);
-                if (id != 0)
-                {
-                    ListBoxElement buf = new ListBoxElement(11101, txt);
-                    listBoxGrupy.Items.Add(buf);
-                } else
-                {
-                    MessageBox.Show("Nie udało się dodać nowej grupy");
-                }
+                Our.db.AddGrupa(txt);
+
+                refreshGrupyListBox();
             }
+        }
+
+        private void refreshGrupyListBox()
+        {
+            Dictionary<int, string> grupy = Our.db.getListaGrup();
+
+            listBoxGrupy.Items.Clear();
+
+            foreach(var entry in grupy)
+            {
+                ListBoxElement lbItem = new ListBoxElement(entry.Key, entry.Value);
+                listBoxGrupy.Items.Add(lbItem);
+            }
+        }
+
+        private void edytujClick(object sender, EventArgs e)
+        {
+            ListBoxElement element = (ListBoxElement)listBoxGrupy.SelectedItem;
+
+            int id_grupy = element.getId();
+            string nazwa = element.getText();
+
+            InputDialoBox box = new InputDialoBox(nazwa);
+            box.ShowDialog();
+            if(box.getResult() == ModalResult.mrOK)
+            {
+                nazwa = box.getText();  
+                Our.db.UpadteGrupy(id_grupy, nazwa);
+                refreshGrupyListBox();
+            }
+
         }
     }
 

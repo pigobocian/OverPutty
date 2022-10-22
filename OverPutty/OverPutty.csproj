@@ -65,7 +65,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="DB.cs" />
     <Compile Include="FormInputDialogBox.cs">
       <SubType>Form</SubType>
@@ -73,6 +72,7 @@
     <Compile Include="FormInputDialogBox.Designer.cs">
       <DependentUpon>FormInputDialogBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="ListBoxElement.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
