@@ -1,30 +1,38 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace OverPutty
 {
-    public partial class InputDialoBox : Form
+    public partial class InputDialogBox : Form
     {
         private ModalResult modalResult;
 
-        public InputDialoBox()
+        public InputDialogBox()
         {
             InitializeComponent();
             textBox1.Text = "";
+            textBox1.Visible = true;
+            label1.Visible = false;
         }
 
-        public InputDialoBox(string text)
+        public InputDialogBox(string text, bool isEdit)
         {
             InitializeComponent();
-            textBox1.Text = text;
+
+            if (isEdit)
+            {
+                textBox1.Text = text;
+                textBox1.Visible = true;
+                label1.Visible = false;
+            } else 
+            { 
+                textBox1.Text = "";
+                textBox1.Visible = false;
+                label1.Visible = true;
+                label1.Text = text;
+            }
         }
+
 
         private void InputDialogBox_Load(object sender, EventArgs e)
         {

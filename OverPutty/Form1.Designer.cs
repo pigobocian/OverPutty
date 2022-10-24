@@ -103,7 +103,7 @@ namespace OverPutty
             this.button1.TabIndex = 4;
             this.button1.Text = "Dodaj";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.dodajClick);
+            this.button1.Click += new System.EventHandler(this.DodajGrupyClick);
             // 
             // button2
             // 
@@ -113,7 +113,7 @@ namespace OverPutty
             this.button2.TabIndex = 5;
             this.button2.Text = "Edytuj";
             this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.edytujClick);
+            this.button2.Click += new System.EventHandler(this.EdytujGrupyClick);
             // 
             // button3
             // 
@@ -123,6 +123,7 @@ namespace OverPutty
             this.button3.TabIndex = 6;
             this.button3.Text = "Kasuj";
             this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.DeleteGrupyClick);
             // 
             // button4
             // 
@@ -150,6 +151,7 @@ namespace OverPutty
             this.button6.TabIndex = 7;
             this.button6.Text = "Dodaj";
             this.button6.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.DodajHostClick);
             // 
             // button7
             // 

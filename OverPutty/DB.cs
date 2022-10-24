@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
-using System.Data.SqlTypes;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms.VisualStyles;
 
 namespace OverPutty
 {
@@ -26,7 +21,7 @@ namespace OverPutty
             {
                 connection.Open();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Our.log.LogAdd("Błąd inicjacji interfejsu bazy SQLite: " + e.Message);
             }
@@ -66,7 +61,8 @@ namespace OverPutty
                     + "FOREIGN KEY(id_grupy) REFERENCES grupy(id_grupy)"
                     + ")";
                 sqlCmd.ExecuteNonQuery();
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
                 Our.log.LogAdd("Błąd tworzenia lub aktualizacji tabel konfiguracji: " + e.Message);
             }
@@ -84,8 +80,9 @@ namespace OverPutty
                 sqlCmd.Parameters.Add(new SQLiteParameter("@nazwa", nazwaGrupy));
                 sqlCmd.Prepare();
                 sqlCmd.ExecuteNonQuery();
-                
-            } catch (SQLiteException e)
+
+            }
+            catch (SQLiteException e)
             {
                 Our.log.LogAdd("Błąd dodawania nowej grupy: " + e.Message);
             }
@@ -102,7 +99,8 @@ namespace OverPutty
                 cmd.Parameters.Add(new SQLiteParameter("@id_grupy", id_grupy));
                 cmd.Prepare();
                 cmd.ExecuteNonQuery();
-            } catch (SQLiteException e)
+            }
+            catch (SQLiteException e)
             {
                 Our.log.LogAdd("Błąd aktualizacji grupy, id_grupy=" + id_grupy + " nazwa=" + nazwaGrupy + " : " + e.Message);
             }
@@ -114,6 +112,15 @@ namespace OverPutty
             {
                 SQLiteCommand cmd = connection.CreateCommand();
 
+                cmd.CommandText = "delete from grupy where id_grupy = @id_grupy";
+                cmd.Parameters.Add(new SQLiteParameter("@id_grupy", id_grupy));
+                cmd.Prepare();
+                cmd.ExecuteNonQuery();
+            }
+            catch (SQLiteException e)
+            {
+                Our.log.LogAdd("Błąd podczas usuwania grupy, id_grupy = " + id_grupy + " : " + e.Message);
+
             }
         }
 
@@ -123,7 +130,7 @@ namespace OverPutty
 
             SQLiteCommand cmd = new SQLiteCommand("select nazwa, id_grupy from grupy order by upper(nazwa)", connection);
             SQLiteDataReader reader = cmd.ExecuteReader();
-            while(reader.Read())
+            while (reader.Read())
             {
                 string grupa = reader.GetString(0);
                 int id_grupa = reader.GetInt32(1);
@@ -132,5 +139,7 @@ namespace OverPutty
 
             return listaGrup;
         }
+
+        public void AddHost(int id_grupy, )
     }
 }
