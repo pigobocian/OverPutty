@@ -24,8 +24,9 @@ namespace OverPutty
                 textBox1.Text = text;
                 textBox1.Visible = true;
                 label1.Visible = false;
-            } else 
-            { 
+            }
+            else
+            {
                 textBox1.Text = "";
                 textBox1.Visible = false;
                 label1.Visible = true;

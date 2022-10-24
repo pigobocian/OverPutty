@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SQLite;
 using System.Windows.Forms;
 
 namespace OverPutty
@@ -27,7 +26,7 @@ namespace OverPutty
             if (dialog.getResult() == ModalResult.mrOK)
             {
                 string txt = dialog.getText();
-                Our.db.AddGrupa(txt);
+                Our.db.AddGroup(txt);
 
                 RefreshGrupyListBox();
             }
@@ -35,7 +34,7 @@ namespace OverPutty
 
         private void RefreshGrupyListBox()
         {
-            Dictionary<int, string> grupy = Our.db.getListaGrup();
+            Dictionary<int, string> grupy = Our.db.getGroupList();
 
             listBoxGrupy.Items.Clear();
 
@@ -60,7 +59,7 @@ namespace OverPutty
                 if (box.getResult() == ModalResult.mrOK)
                 {
                     nazwa = box.getText();
-                    Our.db.UpadteGrupy(id_grupy, nazwa);
+                    Our.db.UpdateGroup(id_grupy, nazwa);
                     RefreshGrupyListBox();
                 }
             }
@@ -75,12 +74,12 @@ namespace OverPutty
                 int id_grupy = element.getId();
                 string nazwa = element.getText();
 
-                InputDialogBox box = new InputDialogBox("Czy usunąć grupę ? ( "+nazwa+" )", false);
+                InputDialogBox box = new InputDialogBox("Czy usunąć grupę ? ( " + nazwa + " )", false);
                 box.ShowDialog();
 
                 if (box.getResult() == ModalResult.mrOK)
                 {
-                    Our.db.DeleteGrupy(id_grupy);
+                    Our.db.DeleteGroup(id_grupy);
                     RefreshGrupyListBox();
                 }
             }
@@ -102,7 +101,7 @@ namespace OverPutty
             {
                 int id_grupy = grupa.getId();
 
-                
+
             }
 
         }
@@ -110,6 +109,11 @@ namespace OverPutty
 
     static class Our
     {
+        public const int languagePolish = 1;
+        public const int languageEnglish = 2;
+
+        public static int selectedLanguage = languagePolish;
+
         public static Log log = new Log();
         public static DBInterface db = new DBInterface();
     }
