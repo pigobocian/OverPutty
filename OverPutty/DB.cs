@@ -193,7 +193,9 @@ namespace OverPutty
 
         public void AddHost(int id_group, string hostName)
         {
+            SQLiteCommand cmd = connection.CreateCommand();
 
+            cmd.CommandText = "insert ";
         }
 
         public string GetMessge(int messageNo, int languageNo)
