@@ -6,13 +6,13 @@ namespace OverPutty
 {
     class DBInterface
     {
-        public const string TABLE_GROUP = "group";
-        public const string GROUP_ID_GROUP = "id_group";
+        public const string TABLE_GROUP = "hostGroup";
+        public const string GROUP_ID_GROUP = "id_hostGroup";
         public const string GROUP_NAME = "name";
 
         public const string TABLE_HOST = "host";
         public const string HOST_ID_HOST = "id_host";
-        public const string HOST_ID_GROUP = "id_grup";
+        public const string HOST_ID_GROUP = GROUP_ID_GROUP;
         public const string HOST_NAME = "name";
         public const string HOST_PORT = "port";
         public const string HOST_HOST = "host";
@@ -34,14 +34,22 @@ namespace OverPutty
         public const string HOST_ADDCMD9 = "addcmd9";
 
         public const string TABLE_CONFIG = "config";
-        public const string CONFIG_PARAMNAME = "paramname";
-        public const string CONFIG_PARAMVALUE = "paramvalue";
+        public const string CONFIG_PARAMNAME = "paramName";
+        public const string CONFIG_PARAMVALUE = "paramValue";
 
         public const string SQL_TEXT = " text";
         public const string SQL_INTEGER = " INTEGER";
 
-        public const int errMsgSQLInitError = 1;
-        public const int errMsgSQLCreateOpenTablesError = 2;
+        public const int ERR_MSG_SQL_INIT_ERROR = 1;
+        public const int ERR_MSG_SQL_CREATE_OPEN_TABLE_ERROR = 2;
+
+        public const int ERR_MSG_SQL_HOST_ADD_ERROR = 3;
+        public const int ERR_MSG_SQL_HOST_UPDATE_ERROR = 4;
+        public const int ERR_MSG_SQL_HOST_DELETE_ERROR = 5;
+
+        public const int ERR_MSG_SQL_GROUP_ADD_ERROR = 6;
+        public const int ERR_MSG_SQL_GROUP_UPDATE_ERROR = 7;
+        public const int ERR_MSG_SQL_GROUP_DELETE_ERROR = 8;
 
 
         SQLiteConnection connection;
@@ -61,7 +69,7 @@ namespace OverPutty
             }
             catch (Exception e)
             {
-                Our.log.LogAdd(GetMessge(errMsgSQLInitError, Our.selectedLanguage) + e.Message);
+                Our.log.LogAdd(GetMessge(ERR_MSG_SQL_INIT_ERROR, Our.selectedLanguage) + e.Message);
             }
         }
 
@@ -115,7 +123,7 @@ namespace OverPutty
             }
             catch (Exception e)
             {
-                Our.log.LogAdd(GetMessge(errMsgSQLCreateOpenTablesError, Our.selectedLanguage) + e.Message);
+                Our.log.LogAdd(GetMessge(ERR_MSG_SQL_CREATE_OPEN_TABLE_ERROR, Our.selectedLanguage) + e.Message);
             }
         }
 
@@ -135,7 +143,7 @@ namespace OverPutty
             }
             catch (SQLiteException e)
             {
-                Our.log.LogAdd("Błąd dodawania nowej grupy: " + e.Message);
+                Our.log.LogAdd(GetMessge(ERR_MSG_SQL_GROUP_ADD_ERROR, Our.selectedLanguage) + e.Message);
             }
         }
 
@@ -153,7 +161,7 @@ namespace OverPutty
             }
             catch (SQLiteException e)
             {
-                Our.log.LogAdd("Błąd aktualizacji grupy, id_grupy=" + id_grup + " nazwa=" + groupName + " : " + e.Message);
+                Our.log.LogAdd(GetMessge(ERR_MSG_SQL_GROUP_UPDATE_ERROR, Our.selectedLanguage) + id_grup + " nazwa=" + groupName + " : " + e.Message);
             }
         }
 
@@ -170,7 +178,7 @@ namespace OverPutty
             }
             catch (SQLiteException e)
             {
-                Our.log.LogAdd("Błąd podczas usuwania grupy, id_grupy = " + id_group + " : " + e.Message);
+                Our.log.LogAdd(GetMessge(ERR_MSG_SQL_GROUP_DELETE_ERROR, Our.selectedLanguage) + id_group + " : " + e.Message);
 
             }
         }
@@ -179,24 +187,158 @@ namespace OverPutty
         {
             Dictionary<int, string> groupList = new Dictionary<int, string>();
 
-            SQLiteCommand cmd = new SQLiteCommand("select " + GROUP_NAME + ", " + GROUP_ID_GROUP + " from " + TABLE_GROUP + " order by upper(" + GROUP_NAME + ")", connection);
-            SQLiteDataReader reader = cmd.ExecuteReader();
-            while (reader.Read())
+            try
             {
-                string groupName = reader.GetString(0);
-                int id_group = reader.GetInt32(1);
-                groupList.Add(id_group, groupName);
+                string sqlCmd = "select " + GROUP_NAME + ", " + GROUP_ID_GROUP + " from " + TABLE_GROUP + " order by upper(" + GROUP_NAME + ")";
+                SQLiteCommand cmd = new SQLiteCommand(sqlCmd, connection);
+                SQLiteDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    string groupName = reader.GetString(0);
+                    int id_group = reader.GetInt32(1);
+                    groupList.Add(id_group, groupName);
+                }
+            }
+            catch (SQLiteException e)
+            {
+                Our.log.LogAdd("Błąd pobierania tabeli grup: " + e.Message);
             }
 
             return groupList;
         }
 
-        public void AddHost(int id_group, string hostName)
+        public void AddHost(int hostId_group, string hostName, string hostPort, string hostUser, string hostPass, string hostCompress, string hostSSHVer,
+            string hostProtocol, string hostTCPVer, string hostPrivKey, string hostAddCmd1, string hostAddCmd2, string hostAddCmd3, string hostAddCmd4
+            , string hostAddCmd5, string hostAddCmd6, string hostAddCmd7, string hostAddCmd8, string hostAddCmd9)
         {
-            SQLiteCommand cmd = connection.CreateCommand();
+            try
+            {
+                SQLiteCommand cmd = connection.CreateCommand();
 
-            cmd.CommandText = "insert ";
+                cmd.CommandText = "insert into " + TABLE_HOST + "(" +
+                HOST_ID_GROUP + "," + HOST_NAME + "," + HOST_PORT + "," + HOST_HOST + "," + HOST_USER + "," +
+                HOST_PASS + "," + HOST_COMPRESS + "," + HOST_SSH_VER + "," + HOST_PROTOCOL + "," + HOST_TCP_VER + "," +
+                HOST_PRIVKEY + "," + HOST_ADDCMD1 + "," + HOST_ADDCMD2 + "," + HOST_ADDCMD3 + "," + HOST_ADDCMD4 + "," +
+                HOST_ADDCMD5 + "," + HOST_ADDCMD6 + "," + HOST_ADDCMD7 + "," + HOST_ADDCMD8 + "," + HOST_ADDCMD9 +
+                ") values (" +
+                "@" + HOST_ID_GROUP + "," + "@" + HOST_NAME + "," + "@" + HOST_PORT + "," + "@" + HOST_HOST + "," +
+                "@" + HOST_USER + "," + "@" + HOST_PASS + "," + "@" + HOST_COMPRESS + "," + "@" + HOST_SSH_VER + "," +
+                "@" + HOST_PROTOCOL + "," + "@" + HOST_TCP_VER + "," + "@" + HOST_PRIVKEY + "," + "@" + HOST_ADDCMD1 + "," +
+                "@" + HOST_ADDCMD2 + "," + "@" + HOST_ADDCMD3 + "," + "@" + HOST_ADDCMD4 + "," + "@" + HOST_ADDCMD5 + "," +
+                "@" + HOST_ADDCMD6 + "," + "@" + HOST_ADDCMD7 + "," + "@" + HOST_ADDCMD8 + "," + "@" + HOST_ADDCMD9 + ")";
+
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_ID_GROUP, hostId_group));
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_NAME, hostName));
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_PORT, hostPort));
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_HOST, hostName));
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_USER, hostUser));
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_PASS, hostPass));
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_COMPRESS, hostCompress));
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_SSH_VER, hostSSHVer));
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_PROTOCOL, hostProtocol));
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_TCP_VER, hostTCPVer));
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_PRIVKEY, hostPrivKey));
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_ADDCMD1, hostAddCmd1));
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_ADDCMD2, hostAddCmd2));
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_ADDCMD3, hostAddCmd3));
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_ADDCMD4, hostAddCmd4));
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_ADDCMD5, hostAddCmd5));
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_ADDCMD6, hostAddCmd6));
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_ADDCMD7, hostAddCmd7));
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_ADDCMD8, hostAddCmd8));
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_ADDCMD9, hostAddCmd9));
+
+                cmd.Prepare();
+                cmd.ExecuteNonQuery();
+
+            }
+            catch (SQLiteException e)
+            {
+                Our.log.LogAdd(GetMessge(ERR_MSG_SQL_HOST_ADD_ERROR, Our.selectedLanguage) + hostName + " : " + e.Message);
+            }
         }
+
+        public void UpdateHost(int id_host, int hostId_group, string hostName, string hostPort, string hostUser, string hostPass, string hostCompress, string hostSSHVer,
+            string hostProtocol, string hostTCPVer, string hostPrivKey, string hostAddCmd1, string hostAddCmd2, string hostAddCmd3, string hostAddCmd4
+            , string hostAddCmd5, string hostAddCmd6, string hostAddCmd7, string hostAddCmd8, string hostAddCmd9)
+        {
+            try
+            {
+                SQLiteCommand cmd = connection.CreateCommand();
+
+                cmd.CommandText = "update " + TABLE_HOST + " set " +
+                HOST_ID_GROUP + "=" + "@" + HOST_ID_GROUP + "," +
+                HOST_NAME + "=" + "@" + HOST_NAME + "," +
+                HOST_PORT + "=" + "@" + HOST_PORT + "," +
+                HOST_HOST + "=" + "@" + HOST_HOST + "," +
+                HOST_USER + "=" + "@" + HOST_USER + "," +
+                HOST_PASS + "=" + "@" + HOST_PASS + "," +
+                HOST_COMPRESS + "=" + "@" + HOST_COMPRESS + "," +
+                HOST_SSH_VER + "=" + "@" + HOST_SSH_VER + "," +
+                HOST_PROTOCOL + "=" + "@" + HOST_PROTOCOL + "," +
+                HOST_TCP_VER + "=" + "@" + HOST_TCP_VER + "," +
+                HOST_PRIVKEY + "=" + "@" + HOST_PRIVKEY + "," +
+                HOST_ADDCMD1 + "=" + "@" + HOST_ADDCMD1 + "," +
+                HOST_ADDCMD2 + "=" + "@" + HOST_ADDCMD2 + "," +
+                HOST_ADDCMD3 + "=" + "@" + HOST_ADDCMD3 + "," +
+                HOST_ADDCMD4 + "=" + "@" + HOST_ADDCMD4 + "," +
+                HOST_ADDCMD5 + "=" + "@" + HOST_ADDCMD5 + "," +
+                HOST_ADDCMD6 + "=" + "@" + HOST_ADDCMD6 + "," +
+                HOST_ADDCMD7 + "=" + "@" + HOST_ADDCMD7 + "," +
+                HOST_ADDCMD8 + "=" + "@" + HOST_ADDCMD8 + "," +
+                HOST_ADDCMD9 + "=" + "@" + HOST_ADDCMD9 +
+                " where id_host = " + id_host;
+
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_ID_HOST, id_host));
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_ID_GROUP, hostId_group));
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_NAME, hostName));
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_PORT, hostPort));
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_HOST, hostName));
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_USER, hostUser));
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_PASS, hostPass));
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_COMPRESS, hostCompress));
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_SSH_VER, hostSSHVer));
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_PROTOCOL, hostProtocol));
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_TCP_VER, hostTCPVer));
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_PRIVKEY, hostPrivKey));
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_ADDCMD1, hostAddCmd1));
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_ADDCMD2, hostAddCmd2));
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_ADDCMD3, hostAddCmd3));
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_ADDCMD4, hostAddCmd4));
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_ADDCMD5, hostAddCmd5));
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_ADDCMD6, hostAddCmd6));
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_ADDCMD7, hostAddCmd7));
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_ADDCMD8, hostAddCmd8));
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_ADDCMD9, hostAddCmd9));
+
+                cmd.Prepare();
+                cmd.ExecuteNonQuery();
+
+            }
+            catch (SQLiteException e)
+            {
+                Our.log.LogAdd(GetMessge(ERR_MSG_SQL_HOST_UPDATE_ERROR, Our.selectedLanguage) + hostName + " : " + e.Message);
+            }
+        }
+
+        public void DeleteHost(int id_host)
+        {
+            try
+            {
+                SQLiteCommand cmd = connection.CreateCommand();
+
+                cmd.CommandText = "delete from " + TABLE_HOST + " where " + HOST_ID_HOST + "= @" + HOST_ID_HOST;
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_ID_HOST, id_host));
+                cmd.Prepare();
+                cmd.ExecuteNonQuery();
+            }
+            catch (SQLiteException e)
+            {
+                Our.log.LogAdd(GetMessge(ERR_MSG_SQL_HOST_DELETE_ERROR, Our.selectedLanguage) + id_host + " : " + e.Message);
+            }
+
+        }
+
 
         public string GetMessge(int messageNo, int languageNo)
         {
@@ -206,15 +348,29 @@ namespace OverPutty
                 case Our.languagePolish:
                     switch (messageNo)
                     {
-                        case errMsgSQLInitError: msgBuf = "Błąd inicjacji interfejsu bazy SQLite"; break;
-                        case errMsgSQLCreateOpenTablesError: msgBuf = "Błąd tworzenia lub aktualizacji tabel konfiguracji"; break;
+                        case ERR_MSG_SQL_INIT_ERROR: msgBuf = "Błąd inicjacji interfejsu bazy SQLite"; break;
+                        case ERR_MSG_SQL_CREATE_OPEN_TABLE_ERROR: msgBuf = "Błąd tworzenia lub aktualizacji tabel konfiguracji"; break;
+                        case ERR_MSG_SQL_HOST_ADD_ERROR: msgBuf = "Błąd podczas dodawania hosta"; break;
+                        case ERR_MSG_SQL_HOST_UPDATE_ERROR: msgBuf = "Błąd aktualizacji hosta"; break;
+                        case ERR_MSG_SQL_HOST_DELETE_ERROR: msgBuf = "Błąd podczas usówania hosta"; break;
+                        case ERR_MSG_SQL_GROUP_ADD_ERROR: msgBuf = "Błąd podczas dodawania grupy"; break;
+                        case ERR_MSG_SQL_GROUP_UPDATE_ERROR: msgBuf = "Błąd podczas aktualizacji grupy"; break;
+                        case ERR_MSG_SQL_GROUP_DELETE_ERROR: msgBuf = "Błąd odczas kasowania grupy"; break;
+
                     };
                     break;
                 case Our.languageEnglish:
                     switch (messageNo)
                     {
-                        case errMsgSQLInitError: msgBuf = "Error SQLite initialisation"; break;
-                        case errMsgSQLCreateOpenTablesError: msgBuf = "Error create or open SQLite database file"; break;
+                        case ERR_MSG_SQL_INIT_ERROR: msgBuf = "Error SQLite initialisation"; break;
+                        case ERR_MSG_SQL_CREATE_OPEN_TABLE_ERROR: msgBuf = "Error create or open SQLite database file"; break;
+                        case ERR_MSG_SQL_HOST_ADD_ERROR: msgBuf = "Host add error"; break;
+                        case ERR_MSG_SQL_HOST_UPDATE_ERROR: msgBuf = "Host update error"; break;
+                        case ERR_MSG_SQL_HOST_DELETE_ERROR: msgBuf = "Host delete error"; break;
+                        case ERR_MSG_SQL_GROUP_ADD_ERROR: msgBuf = "Group add error"; break;
+                        case ERR_MSG_SQL_GROUP_UPDATE_ERROR: msgBuf = "Group update error"; break;
+                        case ERR_MSG_SQL_GROUP_DELETE_ERROR: msgBuf = "Group delete error"; break;
+
                     };
                     break;
 
