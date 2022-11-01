@@ -45,6 +45,8 @@ namespace OverPutty
             }
         }
 
+        private void Refresh
+        
         private void EdytujGrupyClick(object sender, EventArgs e)
         {
             ListBoxElement element = (ListBoxElement)listBoxGrupy.SelectedItem;
@@ -117,17 +119,17 @@ namespace OverPutty
 
     public enum SSHVersion
     {
-        Ver1, Ver2, NotSpecyfied
+        Ver1 = 1, Ver2 = 2, NotSpecyfied = 0
     };
 
     public enum ProtocolType
     {
-        SSH, Telnet, Rlogin, RAW, Serial
+        SSH = 1, Telnet = 2, Rlogin = 3, RAW = 4, Serial = 5
     };
 
     public enum TCPVersion
     {
-        TCPVer4, TCPVer6, NotSpecyfied
+        TCPVer4 = 1, TCPVer6 = 2, NotSpecyfied = 0
     }
 
 }

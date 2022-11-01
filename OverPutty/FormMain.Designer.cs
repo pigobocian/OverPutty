@@ -29,9 +29,15 @@ namespace OverPutty
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
+            "sssss",
+            "dddd"}, -1);
+            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("cccc");
             this.listViewHosts = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.listBoxGrupy = new System.Windows.Forms.ListBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -49,9 +55,16 @@ namespace OverPutty
             // 
             this.listViewHosts.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
-            this.columnHeader2});
+            this.columnHeader2,
+            this.columnHeader3,
+            this.columnHeader4});
+            this.listViewHosts.FullRowSelect = true;
             this.listViewHosts.GridLines = true;
+            this.listViewHosts.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.listViewHosts.HideSelection = false;
+            this.listViewHosts.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
+            listViewItem1,
+            listViewItem2});
             this.listViewHosts.Location = new System.Drawing.Point(12, 153);
             this.listViewHosts.Name = "listViewHosts";
             this.listViewHosts.Size = new System.Drawing.Size(353, 285);
@@ -61,13 +74,21 @@ namespace OverPutty
             // 
             // columnHeader1
             // 
-            this.columnHeader1.Text = "Opis";
+            this.columnHeader1.Text = "Nazwa";
             this.columnHeader1.Width = 200;
             // 
             // columnHeader2
             // 
             this.columnHeader2.Text = "Host";
             this.columnHeader2.Width = 120;
+            // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Text = "Port";
+            // 
+            // columnHeader4
+            // 
+            this.columnHeader4.Text = "User";
             // 
             // listBoxGrupy
             // 
@@ -213,6 +234,8 @@ namespace OverPutty
         private System.Windows.Forms.Button button6;
         private System.Windows.Forms.Button button7;
         private System.Windows.Forms.Button button8;
+        private System.Windows.Forms.ColumnHeader columnHeader3;
+        private System.Windows.Forms.ColumnHeader columnHeader4;
     }
 }
 

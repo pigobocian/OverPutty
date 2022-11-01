@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data.SQLite;
 
 namespace OverPutty
@@ -73,7 +74,55 @@ namespace OverPutty
             }
         }
 
-        void InitTables()
+        public SQLiteConnection GetConnection()
+        {
+            return connection;
+        }
+
+        public static string GetGroupSelectString()
+        {
+            return " select "
+                + GROUP_ID_GROUP
+                + ","
+                + GROUP_NAME
+                + " from "
+                + TABLE_GROUP
+                + " ";
+        }
+
+        public static string GetHostSelectString()
+        {
+            return " select "
+                + HOST_ID_HOST + ","   // 0
+                + HOST_ID_GROUP + ","  // 1
+                + HOST_NAME + ","      // 2
+                + HOST_PORT + ","      // 3
+                + HOST_HOST + ","      // 4
+                + HOST_USER + ","      // 5
+                + HOST_PASS + ","      // 6
+                + HOST_COMPRESS + ","  // 7
+                + HOST_SSH_VER + ","   // 8
+                + HOST_PROTOCOL + ","  // 9
+                + HOST_TCP_VER + ","   // 10
+                + HOST_PRIVKEY + ","   // 11
+                + HOST_ADDCMD1 + ","   // 12
+                + HOST_ADDCMD2 + ","   // 13
+                + HOST_ADDCMD3 + ","   // 14
+                + HOST_ADDCMD4 + ","   // 15
+                + HOST_ADDCMD5 + ","   // 16
+                + HOST_ADDCMD6 + ","   // 17
+                + HOST_ADDCMD7 + ","   // 18
+                + HOST_ADDCMD8 + ","   // 19
+                + HOST_ADDCMD9 + ","   // 20
+                + " from " 
+                + TABLE_HOST
+                + " ";
+        
+
+    }
+
+
+    void InitTables()
         {
             try
             {
@@ -207,8 +256,92 @@ namespace OverPutty
             return groupList;
         }
 
-        public void AddHost(int hostId_group, string hostName, string hostPort, string hostUser, string hostPass, string hostCompress, string hostSSHVer,
-            string hostProtocol, string hostTCPVer, string hostPrivKey, string hostAddCmd1, string hostAddCmd2, string hostAddCmd3, string hostAddCmd4
+
+        public Dictionary<int,List<String>> getHostList()
+        {
+            Dictionary<int, List<string>> hosts = new Dictionary<int, List<string>>();
+
+            try
+            {
+                string sql = DBInterface.GetHostSelectString() + " order by upper(" + DBInterface.HOST_NAME + ")";
+                SQLiteCommand cmd = new SQLiteCommand(sql, connection);
+                SQLiteDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    int id_host = reader.GetInt32(0);
+                    string name = reader.GetString(2);
+                    string port = reader.GetString(3);
+                    string host = reader.GetString(4);
+                    string user = reader.GetString(5);
+                    string pass = reader.GetString(6);
+                    bool compress = reader.GetBoolean(7);
+                    int sshVer = reader.GetInt32(8);
+                    int protocol = reader.GetInt32(9);
+                    int tcpVer = reader.GetInt32(10);
+                    string privKey = reader.GetString(11);
+                    string addCmd1 = reader.GetString(12);
+                    string addCmd2 = reader.GetString(13);
+                    string addCmd3 = reader.GetString(14);
+                    string addCmd4 = reader.GetString(15);
+                    string addCmd5 = reader.GetString(16);
+                    string addCmd6 = reader.GetString(17);
+                    string addCmd7 = reader.GetString(18);
+                    string addCmd8 = reader.GetString(19);
+                    string addCmd9 = reader.GetString(20);
+
+                    List<String> columns = new List<string>();
+                    columns.Add(name);
+                    columns.Add(port);
+                    columns.Add(host);
+                    columns.Add(user);
+                    columns.Add(pass);
+                    columns.Add(compress ? "TAK" : "   ");
+                    switch(sshVer)
+                    {
+                        case 1: columns.Add("Ver1"); break;
+                        case 2: columns.Add("Ver2"); break;
+                        default: columns.Add("    "); break;
+                    }
+                    switch (protocol)
+                    {
+                        case 0: columns.Add("SSH"); break;
+                        case 1: columns.Add("Telnet"); break;
+                        case 2: columns.Add("Rlogin"); break;
+                        case 3: columns.Add("Raw"); break;
+                        case 4: columns.Add("Serial"); break;
+                        default: columns.Add("*err*"); break;
+                    }
+                    switch (tcpVer)
+                    {
+                        case 0: columns.Add("   "); break;
+                        case 1: columns.Add("TCPv4"); break;
+                        case 2: columns.Add("TCPv6"); break;
+                        default:columns.Add("*err*"); break;
+                    }
+                    columns.Add(privKey);
+                    columns.Add(addCmd1);
+                    columns.Add(addCmd2);
+                    columns.Add(addCmd3);
+                    columns.Add(addCmd4);
+                    columns.Add(addCmd5);
+                    columns.Add(addCmd6);
+                    columns.Add(addCmd7);
+                    columns.Add(addCmd8);
+                    columns.Add(addCmd9);
+
+                    hosts.Add(id_host, columns);
+                }
+            } catch (SQLiteException e)
+            {
+                Our.log.LogAdd("Błąd odczytu listy hostów: " + e.Message);
+            }
+            
+            return hosts;
+        }
+
+
+        public void AddHost(int id_group, string hostName, string hostPort, string hostUser, string hostPass, bool hostCompress, int hostSSHVer,
+            int hostProtocol, int hostTCPVer, string hostPrivKey, string hostAddCmd1, string hostAddCmd2, string hostAddCmd3, string hostAddCmd4
             , string hostAddCmd5, string hostAddCmd6, string hostAddCmd7, string hostAddCmd8, string hostAddCmd9)
         {
             try
@@ -227,16 +360,16 @@ namespace OverPutty
                 "@" + HOST_ADDCMD2 + "," + "@" + HOST_ADDCMD3 + "," + "@" + HOST_ADDCMD4 + "," + "@" + HOST_ADDCMD5 + "," +
                 "@" + HOST_ADDCMD6 + "," + "@" + HOST_ADDCMD7 + "," + "@" + HOST_ADDCMD8 + "," + "@" + HOST_ADDCMD9 + ")";
 
-                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_ID_GROUP, hostId_group));
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_ID_GROUP, id_group));
                 cmd.Parameters.Add(new SQLiteParameter("@" + HOST_NAME, hostName));
                 cmd.Parameters.Add(new SQLiteParameter("@" + HOST_PORT, hostPort));
                 cmd.Parameters.Add(new SQLiteParameter("@" + HOST_HOST, hostName));
                 cmd.Parameters.Add(new SQLiteParameter("@" + HOST_USER, hostUser));
                 cmd.Parameters.Add(new SQLiteParameter("@" + HOST_PASS, hostPass));
-                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_COMPRESS, hostCompress));
-                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_SSH_VER, hostSSHVer));
-                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_PROTOCOL, hostProtocol));
-                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_TCP_VER, hostTCPVer));
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_COMPRESS, hostCompress ? "1" : "2"));
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_SSH_VER, hostSSHVer.ToString()));
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_PROTOCOL, hostProtocol.ToString()));
+                cmd.Parameters.Add(new SQLiteParameter("@" + HOST_TCP_VER, hostTCPVer.ToString()));
                 cmd.Parameters.Add(new SQLiteParameter("@" + HOST_PRIVKEY, hostPrivKey));
                 cmd.Parameters.Add(new SQLiteParameter("@" + HOST_ADDCMD1, hostAddCmd1));
                 cmd.Parameters.Add(new SQLiteParameter("@" + HOST_ADDCMD2, hostAddCmd2));
