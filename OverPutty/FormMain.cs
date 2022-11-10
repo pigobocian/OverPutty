@@ -45,7 +45,7 @@ namespace OverPutty
             }
         }
 
-        private void Refresh
+        //private void Refresh
         
         private void EdytujGrupyClick(object sender, EventArgs e)
         {

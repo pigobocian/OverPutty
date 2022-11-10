@@ -1,4 +1,4 @@
-﻿
+
 namespace OverPutty
 {
     partial class FormMain
@@ -55,7 +55,7 @@ namespace OverPutty
             this.listViewHosts.Location = new System.Drawing.Point(12, 153);
             this.listViewHosts.Name = "listViewHosts";
             this.listViewHosts.Size = new System.Drawing.Size(353, 285);
-            this.listViewHosts.TabIndex = 0;
+            this.listViewHosts.TabIndex 1;
             this.listViewHosts.UseCompatibleStateImageBehavior = false;
             this.listViewHosts.View = System.Windows.Forms.View.Details;
             // 
@@ -75,7 +75,7 @@ namespace OverPutty
             this.listBoxGrupy.Location = new System.Drawing.Point(12, 27);
             this.listBoxGrupy.Name = "listBoxGrupy";
             this.listBoxGrupy.Size = new System.Drawing.Size(353, 95);
-            this.listBoxGrupy.TabIndex = 1;
+            this.listBoxGrupy.TabIndex = 0;
             // 
             // label1
             // 
