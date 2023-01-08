@@ -10,12 +10,14 @@ namespace OverPutty
         public FormMain()
         {
             InitializeComponent();
-            Our.log.LogAdd("Start aplikacji");
+            Common.log.LogAdd("Start aplikacji");
             RefreshGrupyListBox();
         }
 
         private void button8_Click(object sender, EventArgs e)
         {
+            ConfigForm form = new ConfigForm();
+            form.ShowDialog();
         }
 
         private void DodajGrupyClick(object sender, EventArgs e)
@@ -23,10 +25,10 @@ namespace OverPutty
             InputDialogBox dialog = new InputDialogBox();
             dialog.ShowDialog();
 
-            if (dialog.getResult() == ModalResult.mrOK)
+            if (dialog.getModalResult() == ModalResult.mrOK)
             {
                 string txt = dialog.getText();
-                Our.db.AddGroup(txt);
+                
 
                 RefreshGrupyListBox();
             }
@@ -34,15 +36,15 @@ namespace OverPutty
 
         private void RefreshGrupyListBox()
         {
-            Dictionary<int, string> grupy = Our.db.getGroupList();
+            //Dictionary<int, string> grupy = Common.db.getGroupList();
 
             listBoxGrupy.Items.Clear();
 
-            foreach (var entry in grupy)
-            {
-                ListBoxElement lbItem = new ListBoxElement(entry.Key, entry.Value);
-                listBoxGrupy.Items.Add(lbItem);
-            }
+            //foreach (var entry in grupy)
+            //{
+            //    ListBoxElement lbItem = new ListBoxElement(entry.Key, entry.Value);
+            //    listBoxGrupy.Items.Add(lbItem);
+            //}
         }
 
         //private void Refresh
@@ -58,10 +60,10 @@ namespace OverPutty
 
                 InputDialogBox box = new InputDialogBox(nazwa, true);
                 box.ShowDialog();
-                if (box.getResult() == ModalResult.mrOK)
+                if (box.getModalResult() == ModalResult.mrOK)
                 {
                     nazwa = box.getText();
-                    Our.db.UpdateGroup(id_grupy, nazwa);
+                    //Common.db.UpdateGroup(id_grupy, nazwa);
                     RefreshGrupyListBox();
                 }
             }
@@ -79,9 +81,9 @@ namespace OverPutty
                 InputDialogBox box = new InputDialogBox("Czy usunąć grupę ? ( " + nazwa + " )", false);
                 box.ShowDialog();
 
-                if (box.getResult() == ModalResult.mrOK)
+                if (box.getModalResult() == ModalResult.mrOK)
                 {
-                    Our.db.DeleteGroup(id_grupy);
+            //        Common.db.DeleteGroup(id_grupy);
                     RefreshGrupyListBox();
                 }
             }
@@ -99,14 +101,14 @@ namespace OverPutty
             int id_hostGroup = grupa.getId();
             string groupName = grupa.getText();
 
-            FormHost box = new FormHost("Nowy host", groupName, id_hostGroup);
-            box.ShowDialog();
+            //FormHost box = new FormHost("Nowy host", groupName, id_hostGroup);
+            //box.ShowDialog();
 
 
         }
     }
 
-    static class Our
+    static class Common
     {
         public const int languagePolish = 1;
         public const int languageEnglish = 2;
@@ -117,19 +119,9 @@ namespace OverPutty
         public static DBInterface db = new DBInterface();
     }
 
-    public enum SSHVersion
+    public enum ModalResult
     {
-        Ver1 = 1, Ver2 = 2, NotSpecyfied = 0
-    };
-
-    public enum ProtocolType
-    {
-        SSH = 1, Telnet = 2, Rlogin = 3, RAW = 4, Serial = 5
-    };
-
-    public enum TCPVersion
-    {
-        TCPVer4 = 1, TCPVer6 = 2, NotSpecyfied = 0
+        mrOK, mrCancel
     }
 
 }

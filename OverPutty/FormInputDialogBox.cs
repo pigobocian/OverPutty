@@ -57,15 +57,9 @@ namespace OverPutty
             return textBox1.Text;
         }
 
-        public ModalResult getResult()
+        public ModalResult getModalResult()
         {
             return modalResult;
         }
     }
-
-    public enum ModalResult
-    {
-        mrOK, mrCancel
-    }
-
 }
