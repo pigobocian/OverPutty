@@ -8,13 +8,16 @@ using System.Threading.Tasks;
 
 namespace OverPutty.DBHelpers
 {
+    /// <summary>
+    /// Nazwa usługi - np. SSH, RDP, VNC itd ...
+    /// </summary>
     internal class DBTableNazwaUslugi : IDBTable
     {
         SQLiteCommand cmd;
 
-        public DBTableNazwaUslugi(SQLiteConnection connection)
+        public DBTableNazwaUslugi(SQLiteCommand cmd)
         {
-            this.cmd = connection.CreateCommand();  
+            this.cmd = cmd; 
         }
 
         public bool createTable()
@@ -47,6 +50,7 @@ namespace OverPutty.DBHelpers
             try
             {
                 cmd.CommandText = "insert into nazwauslugi(nazwa, opis) values(@nazwa,@opis)";
+                cmd.Parameters.Clear();
                 cmd.Parameters.Add(new SQLiteParameter("@nazwa", dane[0]));
                 cmd.Parameters.Add(new SQLiteParameter("@opis", dane[1]));
                 cmd.ExecuteNonQuery();
@@ -66,6 +70,7 @@ namespace OverPutty.DBHelpers
                 cmd.CommandText = "update nazwauslugi set nazwa = :@nazwa, "
                     + " opis = @opis "
                     + " where id_nazwauslugi = @id_nazwauslugi";
+                cmd.Parameters.Clear();
                 cmd.Parameters.Add(new SQLiteParameter("@nazwa", dane[0]));
                 cmd.Parameters.Add(new SQLiteParameter("@opis", dane[1]));
                 cmd.Parameters.Add(new SQLiteParameter("@id_nazwauslugi", dane[2]));
@@ -84,6 +89,7 @@ namespace OverPutty.DBHelpers
             try
             {
                 cmd.CommandText = "delete from nazwauslugi where id_nazwaulugi = @id_nazwauslugi";
+                cmd.Parameters.Clear();
                 cmd.Parameters.Add(new SQLiteParameter("@id_nazwauslugi", id));
                 cmd.ExecuteNonQuery();
                 result = true;

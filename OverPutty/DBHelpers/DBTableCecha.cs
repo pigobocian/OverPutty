@@ -8,6 +8,10 @@ using System.Threading.Tasks;
 
 namespace OverPutty.DBHelpers
 {
+    /// <summary>
+    /// cechy opisujące wiersz w tabeli głównej
+    /// np. firma, odział, kolor itp.
+    /// </summary>
     internal class DBTableCecha : IDBTable
     {
         private SQLiteCommand cmd;
@@ -85,8 +89,21 @@ namespace OverPutty.DBHelpers
             try
             {
                 cmd.CommandText = "update cecha set nazwa = @nazwa, "
-                    + " "
+                    + " opis = @opis, "
+                    + " id_slownik = @id_slownik "
+                    + " where id_cecha = @id_cecha";
+                cmd.Parameters.Clear();
+                cmd.Parameters.Add(new SQLiteParameter("@nazwa", dane[0]));
+                cmd.Parameters.Add(new SQLiteParameter("@opis", dane[1]));
+                cmd.Parameters.Add(new SQLiteParameter("@id_slownik", dane[2]));
+                cmd.Parameters.Add(new SQLiteParameter("@id_cecha", id));
+                cmd.ExecuteNonQuery();
+                result= true;
+            } catch (Exception ex)
+            {
+                result = false;
             }
+            return result;
         }
     }
 }

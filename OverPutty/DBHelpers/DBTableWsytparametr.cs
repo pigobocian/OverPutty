@@ -8,6 +8,10 @@ using System.Threading.Tasks;
 
 namespace OverPutty.DBHelpers
 {
+    /// <summary>
+    /// Występowanie parametrów aplikacji, każda aplikacja może mieć dowolnie
+    /// wiele różnych parametrów uruchowmienia
+    /// </summary>
     internal class DBTableWsytparametr : IDBTable
     {
         private SQLiteCommand cmd;
@@ -26,7 +30,7 @@ namespace OverPutty.DBHelpers
                     + "id_wystparametr INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + "id_paramter INTEGER,"
                     + "id_main INTEGER,"
-                    + "FOREIGN KEY(id_parametr) REFERENCES tekst(id_parametr),"
+                    + "FOREIGN KEY(id_parametr) REFERENCES parametr(id_parametr),"
                     + "FOREIGN KEY(id_main) REFERENCES main(id_main)"
                     + ")";
                 cmd.ExecuteNonQuery();

@@ -73,6 +73,7 @@
     <Compile Include="DBHelpers\DBTableSlownik.cs" />
     <Compile Include="DBHelpers\DBTableWartoscslownik.cs" />
     <Compile Include="DBHelpers\DBTableWsytparametr.cs" />
+    <Compile Include="DBHelpers\DBTableWystcecha.cs" />
     <Compile Include="DBHelpers\IDBTable.cs" />
     <Compile Include="DoubleEditForm.cs">
       <SubType>Form</SubType>

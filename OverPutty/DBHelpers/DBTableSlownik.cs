@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace OverPutty.DBHelpers
 {
+    /// <summary>
+    /// Słowniki dla wartości cech
+    /// </summary>
     internal class DBTableSlownik : IDBTable
     {
         private SQLiteCommand cmd;

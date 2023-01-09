@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OverPutty.DBHelpers;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.SQLite;
@@ -20,8 +21,6 @@ namespace OverPutty
         public const int ERR_MSG_SQL_GROUP_ADD_ERROR = 6;
         public const int ERR_MSG_SQL_GROUP_UPDATE_ERROR = 7;
         public const int ERR_MSG_SQL_GROUP_DELETE_ERROR = 8;
-
-
 
 
         SQLiteConnection connection;
@@ -55,53 +54,36 @@ namespace OverPutty
 
         void InitTables()
         {
-            try
-            {
-                SQLiteCommand sqlCmd = connection.CreateCommand();
+            SQLiteCommand sqlCmd = connection.CreateCommand();
 
-                sqlCmd.CommandText = "PRAGMA foreign_keys = ON";
-                sqlCmd.ExecuteNonQuery();
+            sqlCmd.CommandText = "PRAGMA foreign_keys = ON";
+            sqlCmd.ExecuteNonQuery();
 
+            DBTableNazwaUslugi nazwaUslugi = new DBTableNazwaUslugi(sqlCmd);
+            nazwaUslugi.createTable();
 
-                // główna tabela
+            DBTableParametr parametr = new DBTableParametr(sqlCmd);
+            parametr.createTable();
 
-                // występowanie parametrów w tabeli głównej
+            DBTableSlownik slownik = new DBTableSlownik(sqlCmd);
+            slownik.createTable();
 
-                // słowniki wartości dla cech
+            DBTableWartoscslownik wartoscslownik = new DBTableWartoscslownik(sqlCmd);
+            wartoscslownik.createTable();
 
-                // wartości (pozycje) słowników
+            DBTableCecha cecha = new DBTableCecha(sqlCmd);
+            cecha.createTable();
 
-                // cechy opisujące wiersz w tabeli głównej
-                // np. firma, odział, kolor itp.
+            DBTableMain tableMain = new DBTableMain(sqlCmd);
+            tableMain.createTable();
 
-                // wartości cech, pole wblob jest przeznaczone na pzrechowywanie
-                // zawartosci plików, np. pliku klucza prywtnego SSH
-                // i jesli wartość != null to jest dołączona tuz za WARTOSC 
-                // poprzedzona polem ROZDZIEL, czyli:
-                // WARTOSCROZDZELABLOB
-                // pole rozdziel bedzie przyjmować np. wartość spacji, znaku = itd ...
-                sqlCmd.CommandText = "CREATE TABLE IF NOT EXISTS wystcecha ( "
-                    + "id_wystcecha PRIMARY KEY AUTOINCREMENT,"
-                    + "id_main INTEGER,"
-                    + "id_cecha INTEGER,"
-                    + "wartosc TEXT,"
-                    + "rozdziel TEXT,"
-                    + "ablob BLOB,"
-                    + "opis TEXT,"
-                    + "FOREIGN KEY(id_cecha) REFERENCES cecha(id_cecha)"
-                    + ")";
-                sqlCmd.ExecuteNonQuery();
-                sqlCmd.CommandText = "CREATE INDEX IF NOT EXISTS wystcecha_id ON wystcecha(id_wystcecha)";
-                sqlCmd.ExecuteNonQuery();
+            DBTableWystcecha wystcecha = new DBTableWystcecha(sqlCmd);
+            wystcecha.createTable();
 
-            }
-            catch (Exception e)
-            {
-                Common.log.LogAdd(GetMessge(ERR_MSG_SQL_CREATE_OPEN_TABLE_ERROR, Common.selectedLanguage) + e.Message);
-            }
+            DBTableWsytparametr wsytparametr = new DBTableWsytparametr(sqlCmd);
+            wsytparametr.createTable();
+
         }
-
-
 
 
         public string GetMessge(int messageNo, int languageNo)

@@ -11,7 +11,7 @@ namespace OverPutty.DBHelpers
 {
     /// <summary>
     /// Klasa reprezentuje tabelę PARAMETR
-    /// Sama tabela odpowiada za przechowywanie parametrów przekazywanych
+    /// Tabela odpowiada za przechowywanie parametrów przekazywanych
     /// do uruchamianej aplikacji
     /// </summary>
     internal class DBTableParametr:IDBTable
@@ -21,12 +21,12 @@ namespace OverPutty.DBHelpers
         /// <summary>
         /// Konstruktor inicjuje tylko jedno pole służące wykonywaniu poleceń
         /// </summary>
-        /// <param name="connection">
+        /// <param name="cmd">
         /// Do parametru należy przekazać otwarte już połączenie z bazą danych
         /// </param>
-        public DBTableParametr(SQLiteConnection connection)
+        public DBTableParametr(SQLiteCommand cmd)
         {
-            this.cmd = connection.CreateCommand();
+            this.cmd = cmd;
         }
 
         /// <summary>
@@ -63,6 +63,7 @@ namespace OverPutty.DBHelpers
             try
             {
                 cmd.CommandText = "insert into parametr(parametr) values(@parametr)";
+                cmd.Parameters.Clear();
                 cmd.Parameters.Add(new SQLiteParameter("@parametr", dane[0]));
                 cmd.ExecuteNonQuery();
                 result = true;
@@ -80,6 +81,7 @@ namespace OverPutty.DBHelpers
             {
                 cmd.CommandText = "update parametr set paarametr = @parametr "
                     + " where id_marametr = @id_parametr";
+                cmd.Parameters.Clear();
                 cmd.Parameters.Add(new SQLiteParameter("@parametr", dane[0]));
                 cmd.Parameters.Add(new SQLiteParameter("@id_parametr", dane[1]));
                 cmd.ExecuteNonQuery();
@@ -97,6 +99,7 @@ namespace OverPutty.DBHelpers
             try
             {
                 cmd.CommandText = "delete from parametr where id_parametr = @id_parametr";
+                cmd.Parameters.Clear();
                 cmd.Parameters.Add(new SQLiteParameter("@id_parametr", id));
                 cmd.ExecuteNonQuery();  
                 result = true;

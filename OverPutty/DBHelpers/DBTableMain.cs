@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace OverPutty.DBHelpers
 {
+    /// <summary>
+    /// Tabela główna - stąd startuje aplikacja
+    /// </summary>
     internal class DBTableMain : IDBTable
     {
         private SQLiteCommand cmd;
